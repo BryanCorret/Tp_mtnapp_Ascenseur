@@ -5,19 +5,15 @@ from usager import Usager
 # Simulation
 porte = Porte(0)
 ascenseur = Ascenseur()
-usager = Usager(2, 5)
+usager = [Usager('Andréa',2, 5),Usager('Christelle',0, 5),Usager('Eva',4, 1),Usager('Adriano',4, 1)]
 
-# Simulation d'appel d'ascenseur
-usager.appeler_ascenseur(ascenseur)
+for i in range(len(usager)):
+    usager[i].appeler_ascenseur(ascenseur)
 
-ascenseur.choisir_direction()
-ascenseur.monter_descendre()
-usager.attendre_porte_ouverte()
-usager.entrer_ascenseur(ascenseur)
 
 # Simulation de choix de direction et déplacement de l'ascenseur
 while ascenseur.appels_existants() or ascenseur.destinations_existants():
     ascenseur.fermer_porte()
-    ascenseur.monter_descendre()
     ascenseur.choisir_direction()
+    ascenseur.monter_descendre(usager)
 

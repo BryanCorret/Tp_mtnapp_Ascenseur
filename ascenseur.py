@@ -8,6 +8,8 @@ class Ascenseur:
         self.direction = None
         self.destinations = []
         self.appels = []
+        self.maxPersonnes = 5
+        self.nbPersonnesActu = 0
 
     def choisir_direction(self):
         if self.direction == None :
@@ -15,12 +17,18 @@ class Ascenseur:
                 self.direction = 'bas'
             elif self.appels[0] > self.etage :
                 self.direction = 'haut'
-            
-    def mise_en_marche_asenceur(self):
-        ...
-        # a partir de la direction de l'acenseur on descend un par un en vérifier si l'étage et dans les appele si oui on ouvre on prend la destination et o commence a descendre jusqua la destination final pui on prend la prochaine destination
 
-    def monter_descendre(self):
+    def getMaxPersonnes(self):
+        return self.maxPersonnes
+    def getPersonneSActu(self):
+        return self.nbPersonnesActu
+
+    def addPersonne(self):
+        self.nbPersonnesActu +=1
+    def removePersonne(self):
+        self.nbPersonnesActu -=1
+
+    def monter_descendre(self,listeUsager):
         if self.direction == "haut":
             self.etage += 1
         elif self.direction == "bas":
@@ -29,10 +37,20 @@ class Ascenseur:
         if self.etage in self.appels:
             self.appels.remove(self.etage)
             self.signaler_ouvrir_porte()
+            self.getPersonneActuEtage(self.etage,listeUsager)
 
         if self.etage in self.destinations:
             self.destinations.remove(self.etage)
             self.signaler_ouvrir_porte()
+            self.getPersonneActuEtage(self.etage,listeUsager)
+
+    def getPersonneActuEtage(self,etage,listeUsager):
+        for usager in listeUsager:
+            if usager.getEtage() == etage:
+                usager.attendre_porte_ouverte()
+                usager.entrerAscenseur(self)
+            if usager.getDestination() == etage:
+                usager.sortirAscenseur(self)
 
 
     def ajouter_appel(self, etage):
