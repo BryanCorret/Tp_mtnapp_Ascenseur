@@ -18,12 +18,12 @@ class Usager:
 
     def entrerAscenseur(self, ascenseur):
         if random.choice([True, False]):
-            print("{self.nom} décide d'entrer dans l'ascenseur.")
+            print(f"{self.nom} décide d'entrer dans l'ascenseur.")
             if ascenseur.getMaxPersonnes()>ascenseur.getPersonneSActu():
                 ascenseur.ajouter_destination(self.destination)
                 ascenseur.addPersonne()
             else :
-                print("Ascenseur plein,{self.nom} doit attendre quelque minutes")
+                print(f"Ascenseur plein,{self.nom} doit attendre quelque minutes")
 
 
         else:
@@ -33,7 +33,7 @@ class Usager:
         print("Attendre que la porte de l'ascenseur s'ouvre.")
     
     def sortirAscenseur(self,ascenseur):
-        print("{self.nom}sort de l'ascenseur")
+        print(f"{self.nom} sort de l'ascenseur")
         ascenseur.removePersonne()
 
     def getDestination(self):
