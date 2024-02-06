@@ -1,6 +1,7 @@
 from porte import Porte
 from ascenseur import Ascenseur
 from usager import Usager
+import time
 
 # Simulation
 porte = Porte(0)
@@ -13,7 +14,8 @@ for i in range(len(usager)):
 
 # Simulation de choix de direction et déplacement de l'ascenseur
 while ascenseur.appels_existants() or ascenseur.destinations_existants():
-    ascenseur.fermer_porte()
+    # time.sleep(5)
+    print(ascenseur.getDestination(),ascenseur.getAppel())
     ascenseur.choisir_direction()
     ascenseur.monter_descendre(usager)
 

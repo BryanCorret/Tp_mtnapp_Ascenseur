@@ -5,18 +5,27 @@ import time
 class Ascenseur:
     def __init__(self):
         self.etage = 0
+        self.etageMax = 5
+        self.etageMin = 0
         self.direction = None
         self.destinations = []
         self.appels = []
+        self.listeUsager = []
         self.maxPersonnes = 5
         self.nbPersonnesActu = 0
 
     def choisir_direction(self):
         if self.direction == None :
-            if self.appels[0] < self.etage :
-                self.direction = 'bas'
-            elif self.appels[0] > self.etage :
-                self.direction = 'haut'
+            if len(self.appels) > 0:
+                if self.appels[0] < self.etage :
+                    self.direction = 'bas'
+                elif self.appels[0] > self.etage :
+                    self.direction = 'haut'
+            elif len(self.destinations) > 0:
+                if self.destinations[0]<self.etage :
+                    self.direction = 'bas'
+                elif self.destinations[0]>self.etage :
+                    self.direction = 'haut'
 
     def getMaxPersonnes(self):
         return self.maxPersonnes
@@ -29,20 +38,35 @@ class Ascenseur:
         self.nbPersonnesActu -=1
 
     def monter_descendre(self,listeUsager):
-        if self.direction == "haut":
-            self.etage += 1
-        elif self.direction == "bas":
+        if self.etageMax == self.etage:
+            self.direction = "bas"
             self.etage -= 1
+            
+        else :
+            if self.direction == "haut":
+                self.etage += 1
+            elif self.direction == "bas" and self.etage>self.etageMin:
+                self.etage -= 1
+            else :
+                self.direction = "haut"
+                self.etage += 1
+
 
         if self.etage in self.appels:
             self.appels.remove(self.etage)
             self.signaler_ouvrir_porte()
             self.getPersonneActuEtage(self.etage,listeUsager)
+            self.fermer_porte()
 
         if self.etage in self.destinations:
             self.destinations.remove(self.etage)
             self.signaler_ouvrir_porte()
             self.getPersonneActuEtage(self.etage,listeUsager)
+            self.fermer_porte()
+
+
+        if len(self.appels) == 0 and len(self.destinations):
+            self.direction = None
 
     def getPersonneActuEtage(self,etage,listeUsager):
         for usager in listeUsager:
@@ -60,7 +84,10 @@ class Ascenseur:
         return etage in self.appels
 
     def ajouter_destination(self, destination):
-        self.destinations.append(destination)
+        if destination in self.destinations:
+            print('Destination deja selectionné')
+        else :
+            self.destinations.append(destination)
 
     def appels_existants(self):
         return len(self.appels) > 0
@@ -84,5 +111,11 @@ class Ascenseur:
     
     def supprimer_appel(self,etage):
         self.appels.remove(etage)
+    
+    def getDestination(self):
+        return self.destinations
+
+    def getAppel(self):
+        return self.appels
 
 
