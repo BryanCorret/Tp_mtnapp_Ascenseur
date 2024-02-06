@@ -29,14 +29,18 @@ class Ascenseur:
 
     def getMaxPersonnes(self):
         return self.maxPersonnes
-    def getPersonneSActu(self):
+        
+    def getPersonneActu(self):
         return self.nbPersonnesActu
+
+    def getEtage(self):
+        return self.etage
 
     def addPersonne(self):
         self.nbPersonnesActu +=1
     def removePersonne(self):
         self.nbPersonnesActu -=1
-        
+
     def addListUsager(self,listeUsager):
         self.listeUsager = listeUsager
 
