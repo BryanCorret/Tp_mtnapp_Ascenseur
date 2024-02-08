@@ -11,3 +11,6 @@ class Porte:
 
     def signaler_redemarrage(self):
         print("Signaler à l'ascenseur qu'il peut redémarrer")
+
+    def getEtage(self):
+        return self.etage

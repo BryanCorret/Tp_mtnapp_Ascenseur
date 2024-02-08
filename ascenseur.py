@@ -38,6 +38,7 @@ class Ascenseur:
 
     def addPersonne(self):
         self.nbPersonnesActu +=1
+        
     def removePersonne(self):
         self.nbPersonnesActu -=1
 
@@ -117,7 +118,8 @@ class Ascenseur:
         print(f"La porte se ferme à l'étage {self.etage}")
     
     def supprimer_appel(self,etage):
-        self.appels.remove(etage)
+        if etage in self.appels :
+            self.appels.remove(etage)
     
     def getDestination(self):
         return self.destinations

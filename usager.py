@@ -16,8 +16,8 @@ class Usager:
     def getEtage(self):
         return self.etage
 
-    def entrerAscenseur(self, ascenseur):
-        if random.choice([True, False]):
+    def entrerAscenseur(self, ascenseur,testMax=None):
+        if testMax or ((random.choice([True, False])) and not testMax):
             if ascenseur.getMaxPersonnes()>ascenseur.getPersonneActu():
                 print(f"{self.nom} décide d'entrer dans l'ascenseur.")
                 ascenseur.ajouter_destination(self.destination)
