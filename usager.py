@@ -17,7 +17,7 @@ class Usager:
         return self.etage
 
     def entrerAscenseur(self, ascenseur,testMax=None):
-        if testMax or ((random.choice([True, False])) and not testMax):
+        if testMax:
             if ascenseur.getMaxPersonnes()>ascenseur.getPersonneActu():
                 print(f"{self.nom} décide d'entrer dans l'ascenseur.")
                 ascenseur.ajouter_destination(self.destination)
@@ -34,7 +34,6 @@ class Usager:
     
     def sortirAscenseur(self,ascenseur):
         print(f"{self.nom} sort de l'ascenseur")
-        ascenseur.removePersonne()
 
     def getDestination(self):
         return self.destination

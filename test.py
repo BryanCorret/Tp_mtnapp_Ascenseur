@@ -95,6 +95,40 @@ class TestUsager(unittest.TestCase):
     def test_getDestination(self):
         self.assertEqual(self.u1.getDestination(), 5)
 
+    def testEntrerAscenseur(self):
+        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
+        self.u2.entrerAscenseur(self.ascenseur,testMax=True)
+        self.u3.entrerAscenseur(self.ascenseur,testMax=True)
+        self.u4.entrerAscenseur(self.ascenseur,testMax=True)
+        self.u5.entrerAscenseur(self.ascenseur,testMax=True)
+
+        # Récupération du print d'information d'ascenseur deja complet
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        self.u6.entrerAscenseur(self.ascenseur,testMax=True)
+        output = captured_output.getvalue()
+        sys.stdout = sys.__stdout__
+        # Test du print d'information d'ascenseur deja complet
+        self.assertEqual(output.strip(), f"Ascenseur plein,{self.u6.nom} doit attendre quelque minutes")
+
+        self.ascenseur.nbPersonnesActu = 0
+        # Récupération du print d'information d'ascenseur deja complet
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        self.u6.entrerAscenseur(self.ascenseur,testMax=False)
+        output = captured_output.getvalue()
+        sys.stdout = sys.__stdout__
+        # Test du print d'information d'ascenseur deja complet
+        self.assertEqual(output.strip(), f"L'usager est distrait et ne rentre pas dans l'ascenseur.")
+
+    def test_entrer_ascenseur(self):
+        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
+        self.assertEqual(self.ascenseur.destinations, [5])
+        
+        self.ascenseur.destinations = []
+
+        self.u1.entrerAscenseur(self.ascenseur,testMax=False)
+        self.assertEqual(self.ascenseur.destinations, [])
 
 
 
@@ -107,7 +141,7 @@ class TestAscenseur(unittest.TestCase):
         self.porte = Porte(0)
         self.ascenseur = Ascenseur()
         self.u1 = Usager('Jean',2, 5)
-        self.u2 = Usager('Jacque',2, 6)
+        self.u2 = Usager('Jacque',3, 6)
         self.u3 = Usager('Michel',0, 1)
         self.u4 = Usager('Guylenne',5, 1)
         self.u5 = Usager('Julien',3, 6)
@@ -148,13 +182,6 @@ class TestAscenseur(unittest.TestCase):
 
         # Test when etage is not in appels or destinations
         self.assertFalse(self.ascenseur.appel_ou_destination_existe(1, "haut"))
-
-    def test_signaler_ouvrir_porte(self):
-        ...
-    def test_ouvrir_porte(self):
-        ...
-    def test_fermer_porte(self):
-        ...
         
     def test_supprimer_appel(self):
         # Test when etage exists in appels
@@ -185,34 +212,27 @@ class TestAscenseur(unittest.TestCase):
         self.assertEqual(self.ascenseur.getAppel(), [])
 
     def test_choisir_direction(self):
-        # Cas où la direction est initialement None, et il y a des appels
+
+        self.ascenseur.direction = None
+        self.ascenseur.etage = 2
+        self.ascenseur.appels = [1]
+        self.ascenseur.choisir_direction()
+        self.assertEqual(self.ascenseur.direction, 'bas')
+
         self.ascenseur.direction = None
         self.ascenseur.etage = 0
         self.ascenseur.appels = [2]
         self.ascenseur.choisir_direction()
         self.assertEqual(self.ascenseur.direction, 'haut')
 
-        # Cas où la direction est initialement None, mais il y a des destinations
-        self.ascenseur.direction = None  # Réinitialisation de la direction
-        self.ascenseur.etage = 2
-        self.ascenseur.appels = [1]
-        self.ascenseur.choisir_direction()
-        self.assertEqual(self.ascenseur.direction, 'bas')
-
-        # Cas où la direction est initialement None, et les deux listes sont vides
-        self.ascenseur.direction = None  # Réinitialisation de la direction
-        self.ascenseur.choisir_direction()
-        self.assertIsNone(self.ascenseur.direction)
-
-        # Cas où la direction est initialement None, et il y a des appels
+        self.ascenseur.appels = []
         self.ascenseur.direction = None
         self.ascenseur.etage = 0
         self.ascenseur.destinations = [2]
         self.ascenseur.choisir_direction()
         self.assertEqual(self.ascenseur.direction, 'haut')
 
-        # Cas où la direction est initialement None, mais il y a des destinations
-        self.ascenseur.direction = None  # Réinitialisation de la direction
+        self.ascenseur.direction = None
         self.ascenseur.etage = 2
         self.ascenseur.destinations = [1]
         self.ascenseur.choisir_direction()
@@ -226,28 +246,7 @@ class TestAscenseur(unittest.TestCase):
         self.u3.appelerAscenseur(self.ascenseur)
         self.assertEqual(self.ascenseur.appels, [2, 0])
     
-    def testEntrerAscenseur(self):
-        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
-        self.u2.entrerAscenseur(self.ascenseur,testMax=True)
-        self.u3.entrerAscenseur(self.ascenseur,testMax=True)
-        self.u4.entrerAscenseur(self.ascenseur,testMax=True)
-        self.u5.entrerAscenseur(self.ascenseur,testMax=True)
-
-        # Récupération du print d'information d'ascenseur deja complet
-        captured_output = StringIO()
-        sys.stdout = captured_output
-        self.u6.entrerAscenseur(self.ascenseur,testMax=True)
-        output = captured_output.getvalue()
-        sys.stdout = sys.__stdout__
-        # Test du print d'information d'ascenseur deja complet
-        self.assertEqual(output.strip(), f"Ascenseur plein,{self.u6.nom} doit attendre quelque minutes")
-
-    def test_entrer_ascenseur(self):
-        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
-        self.assertEqual(self.ascenseur.destinations, [5])
-        
-        self.u1.entrerAscenseur(self.ascenseur,testMax=False)
-        self.assertEqual(self.ascenseur.destinations, [])
+    
 
     def test_meme_destination(self):
         self.u1.appelerAscenseur(self.ascenseur)
@@ -265,22 +264,81 @@ class TestAscenseur(unittest.TestCase):
         self.assertEqual(self.ascenseur.destinations, [5, 6, 1])
 
 
-    def test_choisir_direction(self):
-        self.u1.appelerAscenseur(self.ascenseur)
-        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
-        self.ascenseur.choisir_direction()
-        self.assertEqual(self.ascenseur.direction, "haut")
+
 
     def test_monter_descendre(self):
-        
+        self.ascenseur.appels = [1]
+        self.ascenseur.direction = None
+        self.ascenseur.etage=self.ascenseur.etageMax
         self.ascenseur.monter_descendre()
-        self.assertEqual(self.ascenseur.etage, 1)
-        self.ascenseur.monter_descendre()
-        self.assertEqual(self.ascenseur.etage, 2)
+        self.assertEqual(self.ascenseur.etage, self.ascenseur.etageMax-1)
+        self.assertEqual(self.ascenseur.direction, "bas")
 
-        self.assertEqual(self.ascenseur.destinations, [5,6])
-        self.assertEqual(self.ascenseur.appels, [])
-        self.assertEqual(self.ascenseur.direction, "haut")
+        self.ascenseur.direction = "haut"
+        self.ascenseur.monter_descendre()
+        self.assertEqual(self.ascenseur.etage, self.ascenseur.etageMax)
+
+        self.ascenseur.direction = "bas"
+        self.ascenseur.etage=self.ascenseur.etageMax-1
+        self.ascenseur.monter_descendre()
+        self.assertEqual(self.ascenseur.etage, self.ascenseur.etageMax-2)
+
+        self.ascenseur.direction = None
+        self.ascenseur.appels = [5]
+        self.ascenseur.etage=self.ascenseur.etageMax-3
+        self.ascenseur.monter_descendre()
+        self.assertEqual(self.ascenseur.direction, 'haut')
+        self.assertEqual(self.ascenseur.etage, self.ascenseur.etageMax-2)
+
+        self.ascenseur.appels=[]
+        self.ascenseur.destinations=[]
+        self.u1.appelerAscenseur(self.ascenseur)
+        self.assertEqual(self.ascenseur.appels,[self.u1.etage])
+        self.ascenseur.direction = "haut"
+        self.ascenseur.etage=1
+        self.ascenseur.monter_descendre()
+        self.assertEqual(self.ascenseur.appels,[])
+        self.assertEqual(self.ascenseur.direction,None)
+
+
+        self.ascenseur.destinations=[]
+        self.u1.entrerAscenseur(self.ascenseur,testMax=True)
+        self.assertEqual(self.ascenseur.destinations,[self.u1.destination])
+        self.ascenseur.direction = "haut"
+        self.ascenseur.etage=4
+        self.ascenseur.monter_descendre()
+        self.assertEqual(self.ascenseur.destinations,[])
+        self.assertEqual(self.ascenseur.direction,None)
+
+
+    def testGetPersonneActuEtage(self):
+        self.ascenseur.listeUsager=[self.u1,self.u2,self.u3]
+        self.ascenseur.getPersonneActuEtage(5)
+        self.assertEqual(self.ascenseur.listeUsager,[self.u2,self.u3])
+
+
+        self.ascenseur.listeUsager=[self.u1,self.u2,self.u3]
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        self.ascenseur.getPersonneActuEtage(2)
+        output = captured_output.getvalue()
+        sys.stdout = sys.__stdout__
+        # Test du print d'information d'ascenseur deja complet
+        self.assertEqual(output.strip(), f"Attendre que la porte de l'ascenseur s'ouvre.\n{self.u1.nom} décide d'entrer dans l'ascenseur.")
+        
+
+
+
+    def testGetEtage(self):
+        self.ascenseur.etage = 4
+        self.assertEqual(self.ascenseur.getEtage(),4)
+
+    
+    def testAddUsager(self):
+        self.u7 = Usager('Denis',0, 5)
+        self.ascenseur.listeUsager = []
+        self.ascenseur.addListUsager(self.u7)
+        self.assertEqual(self.ascenseur.listeUsager,[self.u7])   
 
 
 if __name__ == '__main__':

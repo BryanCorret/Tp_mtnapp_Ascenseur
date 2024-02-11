@@ -39,11 +39,12 @@ class Ascenseur:
     def addPersonne(self):
         self.nbPersonnesActu +=1
         
-    def removePersonne(self):
+    def removePersonne(self,personne):
         self.nbPersonnesActu -=1
+        self.listeUsager.remove(personne)
 
     def addListUsager(self,listeUsager):
-        self.listeUsager = listeUsager
+        self.listeUsager.append(listeUsager)
 
     def monter_descendre(self):
         if self.etageMax == self.etage:
@@ -73,16 +74,25 @@ class Ascenseur:
             self.fermer_porte()
 
 
-        if len(self.appels) == 0 and len(self.destinations):
+        if len(self.appels) == 0 and len(self.destinations)==0:
             self.direction = None
 
     def getPersonneActuEtage(self,etage):
+        usagerSortit = []
         for usager in self.listeUsager:
             if usager.getEtage() == etage:
                 usager.attendre_porte_ouverte()
-                usager.entrerAscenseur(self)
+                usager.entrerAscenseur(self,testMax=True)
             if usager.getDestination() == etage:
                 usager.sortirAscenseur(self)
+                usagerSortit.append(usager)
+
+
+        for usager in usagerSortit:
+            self.removePersonne(usager)
+
+
+
 
 
     def ajouter_appel(self, etage):
