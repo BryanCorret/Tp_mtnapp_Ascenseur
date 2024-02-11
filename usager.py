@@ -6,7 +6,7 @@ class Usager:
         self.etage = etage
         self.destination = destination
 
-    def appeler_ascenseur(self, ascenseur):
+    def appelerAscenseur(self, ascenseur):
         if ascenseur.appel_existe(self.etage):
             print(f"Un appel a déjà été signalé à l'étage {self.etage}")
         else:
@@ -16,14 +16,14 @@ class Usager:
     def getEtage(self):
         return self.etage
 
-    def entrerAscenseur(self, ascenseur):
-        if random.choice([True, False]):
-            print("{self.nom} décide d'entrer dans l'ascenseur.")
-            if ascenseur.getMaxPersonnes()>ascenseur.getPersonneSActu():
+    def entrerAscenseur(self, ascenseur,testMax=None):
+        if testMax:
+            if ascenseur.getMaxPersonnes()>ascenseur.getPersonneActu():
+                print(f"{self.nom} décide d'entrer dans l'ascenseur.")
                 ascenseur.ajouter_destination(self.destination)
                 ascenseur.addPersonne()
             else :
-                print("Ascenseur plein,{self.nom} doit attendre quelque minutes")
+                print(f"Ascenseur plein,{self.nom} doit attendre quelque minutes")
 
 
         else:
@@ -33,8 +33,7 @@ class Usager:
         print("Attendre que la porte de l'ascenseur s'ouvre.")
     
     def sortirAscenseur(self,ascenseur):
-        print("{self.nom}sort de l'ascenseur")
-        ascenseur.removePersonne()
+        print(f"{self.nom} sort de l'ascenseur")
 
     def getDestination(self):
         return self.destination

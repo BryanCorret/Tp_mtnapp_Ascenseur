@@ -29,15 +29,24 @@ class Ascenseur:
 
     def getMaxPersonnes(self):
         return self.maxPersonnes
-    def getPersonneSActu(self):
+        
+    def getPersonneActu(self):
         return self.nbPersonnesActu
+
+    def getEtage(self):
+        return self.etage
 
     def addPersonne(self):
         self.nbPersonnesActu +=1
-    def removePersonne(self):
+        
+    def removePersonne(self,personne):
         self.nbPersonnesActu -=1
+        self.listeUsager.remove(personne)
 
-    def monter_descendre(self,listeUsager):
+    def addListUsager(self,listeUsager):
+        self.listeUsager.append(listeUsager)
+
+    def monter_descendre(self):
         if self.etageMax == self.etage:
             self.direction = "bas"
             self.etage -= 1
@@ -55,26 +64,35 @@ class Ascenseur:
         if self.etage in self.appels:
             self.appels.remove(self.etage)
             self.signaler_ouvrir_porte()
-            self.getPersonneActuEtage(self.etage,listeUsager)
+            self.getPersonneActuEtage(self.etage)
             self.fermer_porte()
 
         if self.etage in self.destinations:
             self.destinations.remove(self.etage)
             self.signaler_ouvrir_porte()
-            self.getPersonneActuEtage(self.etage,listeUsager)
+            self.getPersonneActuEtage(self.etage)
             self.fermer_porte()
 
 
-        if len(self.appels) == 0 and len(self.destinations):
+        if len(self.appels) == 0 and len(self.destinations)==0:
             self.direction = None
 
-    def getPersonneActuEtage(self,etage,listeUsager):
-        for usager in listeUsager:
+    def getPersonneActuEtage(self,etage):
+        usagerSortit = []
+        for usager in self.listeUsager:
             if usager.getEtage() == etage:
                 usager.attendre_porte_ouverte()
-                usager.entrerAscenseur(self)
+                usager.entrerAscenseur(self,testMax=True)
             if usager.getDestination() == etage:
                 usager.sortirAscenseur(self)
+                usagerSortit.append(usager)
+
+
+        for usager in usagerSortit:
+            self.removePersonne(usager)
+
+
+
 
 
     def ajouter_appel(self, etage):
@@ -110,7 +128,8 @@ class Ascenseur:
         print(f"La porte se ferme à l'étage {self.etage}")
     
     def supprimer_appel(self,etage):
-        self.appels.remove(etage)
+        if etage in self.appels :
+            self.appels.remove(etage)
     
     def getDestination(self):
         return self.destinations
